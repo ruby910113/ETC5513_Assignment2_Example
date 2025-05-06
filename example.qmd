@@ -7,4 +7,4 @@ format: html
 
 This is a simple Quarto file.
 
-This line was added in main branch to simulate a conflict.
+This line was added in both branches to demonstrate a merge conflict.
