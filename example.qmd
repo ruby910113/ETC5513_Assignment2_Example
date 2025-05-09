@@ -8,3 +8,45 @@ format: html
 This is a simple Quarto file.
 
 This line was added in both branches to demonstrate a merge conflict.
+
+## Plot Example
+
+```{r}
+library(readr)
+library(ggplot2)
+library(tidyverse)
+```
+
+
+```{r}
+#| label: fig-comparison
+#| fig-cap: "Comparison of cumulative excess deaths per 100,000 people across selected countries (2020–2023)."
+
+# Read csv
+world_excess <- read_csv("data/estimated-cumulative-excess-deaths-per-100000-people-during-covid-19.csv")
+
+# Filter and clean
+selected <- c("Taiwan", "Japan", "South Korea", "China", "Philippines", "Vietnam")
+
+cleaned_excess_data <- world_excess %>%
+  filter(Entity %in% selected) %>%
+  mutate(Day = ymd(Day)) %>%
+  filter(Day >= as.Date("2020-01-01") & Day <= as.Date("2023-12-31")) %>%
+  rename(
+    excess_deaths = 
+      `Cumulative excess deaths per 100,000 people (central estimate)`
+  ) %>%
+  drop_na(excess_deaths) %>%
+  select(Day, Entity, excess_deaths)
+
+## Plot for Comparison Across Neighboring Countries
+ggplot(cleaned_excess_data, aes(x = Day, y = excess_deaths, color = Entity)) +
+  geom_line() +
+  labs(
+    title = "Excess Deaths Comparison: Taiwan and Neighboring Countries",
+    x = "Year",
+    y = "Excess Deaths per 100,000",
+    color = "Country"
+  )
+```
+
